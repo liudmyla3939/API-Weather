@@ -1,0 +1,171 @@
+
+    <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Погодa</title>
+  <link rel="stylesheet" href="./main1.css">
+  <style>
+    body{
+        background: url(./assets/background.jpg) center / cover no-repeat fixed;
+    }
+    .container {
+      display: flex;
+      /* flex-direction: column;
+      align-items: center; */
+      justify-content: space-between;
+      /* margin-top: 50px; */
+      
+    }
+    /* .header {
+    padding: 30px;
+    background-color: #5a5a64;
+    opacity: 0.6;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+} */
+
+    .weather-card {
+      flex-basis: 30%;
+      padding: 20px;
+      border: 1px solid rgb(229, 206, 251);;
+      border-radius: 5px;
+      margin: 20px;
+      color:rgb(67, 4, 144);
+      font-family: "Rubik", sans-serif;
+      
+    }
+    .weather-card img {
+      width: 50px;
+      height: 50px;
+    }
+  </style>
+</head>
+<body>
+  <h1>
+    <span class="magic">
+      <span class="magic-star">
+        <svg viewBox="0 0 512 512">
+        <path d="M512 255.1c0 11.34-7.406 20.86-18.44 23.64l-171.3 42.78l-42.78 171.1C276.7 504.6 267.2 512 255.9 512s-20.84-7.406-23.62-18.44l-42.66-171.2L18.47 279.6C7.406 276.8 0 267.3 0 255.1c0-11.34 7.406-20.83 18.44-23.61l171.2-42.78l42.78-171.1C235.2 7.406 244.7 0 256 0s20.84 7.406 23.62 18.44l42.78 171.2l171.2 42.78C504.6 235.2 512 244.6 512 255.1z" />
+        </svg>
+      </span>
+      <span class="magic-star">
+        <svg viewBox="0 0 512 512">
+        <path d="M512 255.1c0 11.34-7.406 20.86-18.44 23.64l-171.3 42.78l-42.78 171.1C276.7 504.6 267.2 512 255.9 512s-20.84-7.406-23.62-18.44l-42.66-171.2L18.47 279.6C7.406 276.8 0 267.3 0 255.1c0-11.34 7.406-20.83 18.44-23.61l171.2-42.78l42.78-171.1C235.2 7.406 244.7 0 256 0s20.84 7.406 23.62 18.44l42.78 171.2l171.2 42.78C504.6 235.2 512 244.6 512 255.1z" />
+        </svg>
+      </span>
+      <span class="magic-star">
+        <svg viewBox="0 0 512 512">
+        <path d="M512 255.1c0 11.34-7.406 20.86-18.44 23.64l-171.3 42.78l-42.78 171.1C276.7 504.6 267.2 512 255.9 512s-20.84-7.406-23.62-18.44l-42.66-171.2L18.47 279.6C7.406 276.8 0 267.3 0 255.1c0-11.34 7.406-20.83 18.44-23.61l171.2-42.78l42.78-171.1C235.2 7.406 244.7 0 256 0s20.84 7.406 23.62 18.44l42.78 171.2l171.2 42.78C504.6 235.2 512 244.6 512 255.1z" />
+        </svg>
+      </span>
+      <span class="magic-text">API WEATHER</span>
+    </span>
+   
+  </h1>
+  <div class="container">
+    
+  </div>
+
+  <script>
+    
+    // Функція для отримання погоди за допомогою API OpenWeatherMap
+    async function отриматиПогоду(місто, апіКлюч) {
+      const url = `http://api.openweathermap.org/data/2.5/weather?id=${місто}&appid=${апіКлюч}`;
+      
+      try {
+        const відповідь = await fetch(url);
+        const дані = await відповідь.json();
+        return дані;
+      } catch (помилка) {
+        console.error('Сталася помилка при отриманні погоди:', помилка);
+      }
+    }
+
+    // Функція для створення HTML-елемента карточки погоди
+    function створитиКарточку(місто, температура, опис, іконка) {
+      const container = document.querySelector('.container');
+
+      const weatherCard = document.createElement('div');
+      weatherCard.classList.add('weather-card');
+
+      const cityElement = document.createElement('h2');
+      cityElement.textContent = місто;
+
+      const temperatureElement = document.createElement('p');
+      temperatureElement.textContent = `Температура: ${температура} °C`;
+
+      const descriptionElement = document.createElement('p');
+      descriptionElement.textContent = `Опис: ${опис}`;
+
+      const iconElement = document.createElement('img');
+      iconElement.src = `http://openweathermap.org/img/wn/${іконка}@2x.png`;
+
+      weatherCard.appendChild(cityElement);
+      weatherCard.appendChild(temperatureElement);
+      weatherCard.appendChild(descriptionElement);
+      weatherCard.appendChild(iconElement);
+
+      container.appendChild(weatherCard);
+    }
+
+    // Головна функція для виконання запитів та відображення погоди
+    async function показатиПогоду() {
+      const київ = '703448';
+      const лондон = '2643743';
+      const ньюЙорк = '5128638';
+      const апіКлюч = 'bf35cac91880cb98375230fb443a116f&units=metric';
+
+      const погода1 = await отриматиПогоду(київ, апіКлюч);
+      const погода2 = await отриматиПогоду(лондон, апіКлюч);
+      const погода3 = await отриматиПогоду(ньюЙорк, апіКлюч);
+
+      створитиКарточку('Київ', погода1.main.temp, погода1.weather[0].description, погода1.weather[0].icon);
+      створитиКарточку('Лондон', погода2.main.temp, погода2.weather[0].description, погода2.weather[0].icon);
+      створитиКарточку('Нью-Йорк', погода3.main.temp, погода3.weather[0].description, погода3.weather[0].icon);
+    }
+
+    показатиПогоду();
+
+    let index = 0,
+    interval = 1000;
+
+const rand = (min, max) => 
+  Math.floor(Math.random() * (max - min + 1)) + min;
+
+const animate = star => {
+  star.style.setProperty("--star-left", `${rand(-10, 100)}%`);
+  star.style.setProperty("--star-top", `${rand(-40, 80)}%`);
+
+  star.style.animation = "none";
+  star.offsetHeight;
+  star.style.animation = "";
+}
+
+for(const star of document.getElementsByClassName("magic-star")) {
+  setTimeout(() => {
+    animate(star);
+    
+    setInterval(() => animate(star), 1000);
+  }, index++ * (interval / 3))
+}
+  </script>
+<script type="text/javascript">
+  (function(d, t) {
+      var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+      v.onload = function() {
+        window.voiceflow.chat.load({
+          verify: { projectID: '670b9bbd168c7764efc7e9ec' },
+          url: 'https://general-runtime.voiceflow.com',
+          versionID: 'production'
+        });
+      }
+      v.src = "https://cdn.voiceflow.com/widget/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+  })(document, 'script');
+</script>
+</body>
+</html>
+
+</body>
+</html>
